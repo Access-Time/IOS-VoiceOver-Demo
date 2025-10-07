@@ -1,0 +1,4 @@
+/* English localization */
+"hello_world" = "Hello, world!";
+"welcome_message" = "Welcome to VoiceOver Demo";
+"app_description" = "Learn about VoiceOver accessibility through interactive examples";
