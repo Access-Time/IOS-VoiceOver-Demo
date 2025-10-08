@@ -74,7 +74,7 @@ struct HomeView: View {
                 HStack(spacing: 12) {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.green)
-                    Text("10 Interactive Demos")
+                    Text("10+ Interactive Demos")
                 }
                 HStack(spacing: 12) {
                     Image(systemName: "checkmark.circle.fill")

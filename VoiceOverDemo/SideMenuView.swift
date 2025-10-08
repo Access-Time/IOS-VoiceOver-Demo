@@ -29,6 +29,7 @@ struct SideMenuView: View {
         DemoPage(title: "Grouping Elements", icon: "square.grid.2x2", destination: AnyView(GroupingDemoView().environment(\.locale, Locale(identifier: "en-US")))),
         DemoPage(title: "RTL/LTR Reading Order", icon: "arrow.left.arrow.right", destination: AnyView(RTLDemoView().environment(\.locale, Locale(identifier: "en-US")))),
         DemoPage(title: "Form Validation", icon: "checkmark.seal", destination: AnyView(FormValidationDemoView().environment(\.locale, Locale(identifier: "en-US")))),
+        DemoPage(title: "Search Results", icon: "magnifyingglass", destination: AnyView(SearchDemoView().environment(\.locale, Locale(identifier: "en-US")))),
         DemoPage(title: "Reading Order Issues", icon: "list.number", destination: AnyView(ReadingOrderDemoView().environment(\.locale, Locale(identifier: "en-US"))))
     ]
 

@@ -20,7 +20,8 @@ This app demonstrates common accessibility issues and their solutions, helping d
 8. **Grouping Elements** - Demonstrates .combine, .ignore, and .contain grouping options
 9. **RTL/LTR Reading Order** - Shows proper Right-to-Left language support with locale and layoutDirection
 10. **Form Validation** - Proper error handling with .accessibilityHint() and focus management
-11. **Reading Order Issues** - Demonstrates proper element reading order
+11. **Search Results** - Announcing search results with AccessibilityNotification and native .searchable()
+12. **Reading Order Issues** - Demonstrates proper element reading order
 
 ## Technical Details
 
@@ -33,7 +34,7 @@ This app demonstrates common accessibility issues and their solutions, helping d
 
 - `.accessibilityLabel()` - Custom labels for elements
 - `.accessibilityValue()` - Current values
-- `.accessibilityHint()` - Usage hints and error messages
+- `.accessibilityHint()` - Usage hints and error messages (equivalent to aria-describedby)
 - `.accessibilityAddTraits()` - Adding semantic traits (.isButton, .isLink, .isModal, .isSelected)
 - `.accessibilityElement(children:)` - Grouping elements (.combine, .ignore, .contain)
 - `.accessibilityFocused()` - Focus management with @AccessibilityFocusState
@@ -42,6 +43,8 @@ This app demonstrates common accessibility issues and their solutions, helping d
 - `.environment(\.layoutDirection)` - RTL/LTR layout adaptation
 - `.accessibilityAction()` - Custom actions for VoiceOver
 - `.keyboardShortcut()` - Keyboard support for dialogs
+- `AccessibilityNotification.Announcement().post()` - Announcing dynamic changes
+- `.searchable()` - Native search with automatic announcements
 
 ## Project Structure
 
@@ -61,6 +64,7 @@ VoiceOverDemo/
 ├── GroupingDemoView.swift
 ├── RTLDemoView.swift
 ├── FormValidationDemoView.swift
+├── SearchDemoView.swift
 ├── ReadingOrderDemoView.swift
 └── Resources/
     └── Localizable.strings       # Localization files (en, fr, es)
@@ -77,13 +81,15 @@ VoiceOverDemo/
 
 - Always use semantic components (Button, Link) or add proper traits
 - Use TextField's label parameter for form labels, not separate Text views
-- Associate form errors with fields using `.accessibilityHint()`
+- Associate form errors with fields using `.accessibilityHint()` (no direct aria-invalid equivalent in SwiftUI)
 - Hide decorative images from accessibility tree with `.accessibilityHidden(true)`
 - Set locale explicitly for multilingual content - it doesn't auto-detect
 - Use `.environment(\.layoutDirection, .rightToLeft)` for RTL visual adaptation
 - Manage focus programmatically after form validation failures
 - Support keyboard shortcuts (ESC, Enter) for modal dialogs
 - Provide multiple interaction methods (tap, swipe, menus) for actions
+- Announce dynamic content changes with `AccessibilityNotification.Announcement().post()`
+- Use native `.searchable()` modifier for built-in accessible search
 
 ## Contributing
 
