@@ -40,7 +40,7 @@ struct MenuView: View {
                     }
 
                     ToolbarItem(placement: .principal) {
-                        Text(selectedPage?.title ?? "VoiceOver Demo")
+                        Text(selectedPage?.title ?? "Accessibility Demo")
                             .font(.headline)
                     }
                 }
@@ -60,11 +60,11 @@ struct HomeView: View {
                 .foregroundColor(.blue)
                 .accessibilityHidden(true)
 
-            Text("VoiceOver Demo App")
+            Text("Accessibility Demo App")
                 .font(.largeTitle)
                 .fontWeight(.bold)
 
-            Text("Learn about VoiceOver accessibility through interactive examples")
+            Text("Learn about VoiceOver and Voice Control accessibility through interactive examples")
                 .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -74,7 +74,12 @@ struct HomeView: View {
                 HStack(spacing: 12) {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.green)
-                    Text("10+ Interactive Demos")
+                    Text("15+ Interactive Demos")
+                }
+                HStack(spacing: 12) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                    Text("VoiceOver & Voice Control Coverage")
                 }
                 HStack(spacing: 12) {
                     Image(systemName: "checkmark.circle.fill")

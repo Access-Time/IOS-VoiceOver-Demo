@@ -18,7 +18,7 @@ struct SideMenuView: View {
     @Binding var isShowing: Bool
     @Binding var selectedPage: DemoPage?
 
-    let demoPages: [DemoPage] = [
+    let voiceOverPages: [DemoPage] = [
         DemoPage(title: "Default App Language", icon: "globe.badge.chevron.backward", destination: AnyView(DefaultLanguageDemoView())),
         DemoPage(title: "Language & Localization", icon: "globe", destination: AnyView(LanguageDemoView().environment(\.locale, Locale(identifier: "en-US")))),
         DemoPage(title: "Accessibility Traits", icon: "hand.tap", destination: AnyView(TraitsDemoView().environment(\.locale, Locale(identifier: "en-US")))),
@@ -30,6 +30,14 @@ struct SideMenuView: View {
         DemoPage(title: "Form Validation", icon: "checkmark.seal", destination: AnyView(FormValidationDemoView().environment(\.locale, Locale(identifier: "en-US")))),
         DemoPage(title: "Search Results", icon: "magnifyingglass", destination: AnyView(SearchDemoView().environment(\.locale, Locale(identifier: "en-US")))),
         DemoPage(title: "Reading Order Issues", icon: "list.number", destination: AnyView(ReadingOrderDemoView().environment(\.locale, Locale(identifier: "en-US"))))
+    ]
+
+    let voiceControlPages: [DemoPage] = [
+        DemoPage(title: "Voice Control Scrolling", icon: "scroll", destination: AnyView(ScrollingDemoView().environment(\.locale, Locale(identifier: "en-US")))),
+        DemoPage(title: "Elements That Aren't Buttons", icon: "hand.tap", destination: AnyView(GestureElementsDemoView().environment(\.locale, Locale(identifier: "en-US")))),
+        DemoPage(title: "Swipe to Reveal Menu", icon: "hand.draw", destination: AnyView(SwipeMenuDemoView().environment(\.locale, Locale(identifier: "en-US")))),
+        DemoPage(title: "Text Field Dictation", icon: "mic.fill", destination: AnyView(DictationDemoView().environment(\.locale, Locale(identifier: "en-US")))),
+        DemoPage(title: "Action Timeouts", icon: "clock.fill", destination: AnyView(TimeoutDemoView().environment(\.locale, Locale(identifier: "en-US"))))
     ]
 
     var body: some View {
@@ -51,10 +59,10 @@ struct SideMenuView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         // Header
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("VoiceOver Demo")
+                            Text("Accessibility Demo")
                                 .font(.title2)
                                 .fontWeight(.bold)
-                            Text("Accessibility Examples")
+                            Text("VoiceOver & Voice Control Examples")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
@@ -66,40 +74,36 @@ struct SideMenuView: View {
                         // Menu items
                         ScrollView {
                             VStack(spacing: 0) {
-                                ForEach(demoPages) { page in
-                                    Button(action: {
-                                        selectedPage = page
-                                        withAnimation {
-                                            isShowing = false
-                                        }
-                                    }) {
-                                        HStack(spacing: 15) {
-                                            Image(systemName: page.icon)
-                                                .font(.title3)
-                                                .frame(width: 30)
-                                                .foregroundColor(.blue)
-
-                                            Text(page.title)
-                                                .font(.body)
-                                                .foregroundColor(.primary)
-
-                                            Spacer()
-
-                                            Image(systemName: "chevron.right")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
-                                        }
+                                // VoiceOver Section
+                                VStack(alignment: .leading, spacing: 0) {
+                                    Text("VoiceOver")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(.secondary)
                                         .padding(.horizontal, 20)
-                                        .padding(.vertical, 16)
-                                        .background(selectedPage?.id == page.id ? Color.blue.opacity(0.1) : Color.clear)
-                                    }
-                                    .accessibilityElement(children: .combine)
-                                    .accessibilityAddTraits(.isButton)
-                                    .accessibilityLabel(page.title)
-                                    .accessibilityHint("Double tap to view this demo")
+                                        .padding(.vertical, 12)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.systemGray6))
 
-                                    Divider()
-                                        .padding(.leading, 65)
+                                    ForEach(voiceOverPages) { page in
+                                        MenuItemButton(page: page, selectedPage: $selectedPage, isShowing: $isShowing)
+                                    }
+                                }
+
+                                // Voice Control Section
+                                VStack(alignment: .leading, spacing: 0) {
+                                    Text("Voice Control")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(.secondary)
+                                        .padding(.horizontal, 20)
+                                        .padding(.vertical, 12)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.systemGray6))
+
+                                    ForEach(voiceControlPages) { page in
+                                        MenuItemButton(page: page, selectedPage: $selectedPage, isShowing: $isShowing)
+                                    }
                                 }
                             }
                         }
@@ -118,5 +122,48 @@ struct SideMenuView: View {
             }
         }
         .animation(.easeInOut, value: isShowing)
+    }
+}
+
+// Reusable menu item button component
+struct MenuItemButton: View {
+    let page: DemoPage
+    @Binding var selectedPage: DemoPage?
+    @Binding var isShowing: Bool
+
+    var body: some View {
+        Button(action: {
+            selectedPage = page
+            withAnimation {
+                isShowing = false
+            }
+        }) {
+            HStack(spacing: 15) {
+                Image(systemName: page.icon)
+                    .font(.title3)
+                    .frame(width: 30)
+                    .foregroundColor(.blue)
+
+                Text(page.title)
+                    .font(.body)
+                    .foregroundColor(.primary)
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+            .background(selectedPage?.id == page.id ? Color.blue.opacity(0.1) : Color.clear)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(page.title)
+        .accessibilityHint("Double tap to view this demo")
+
+        Divider()
+            .padding(.leading, 65)
     }
 }
