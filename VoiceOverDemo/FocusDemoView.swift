@@ -15,7 +15,7 @@ struct FocusDemoView: View {
     @AccessibilityFocusState private var focusedField: FocusField?
 
     enum FocusField {
-        case dialogButton, closeButton, alertButton, alertOKButton
+        case dialogButton, dialogTitle, closeButton, alertButton, alertOKButton
     }
 
     var body: some View {
@@ -40,21 +40,25 @@ Button("Open Alert") {
 
 if showDialog {
     VStack {
+        Text("Title")
+            .accessibilityAddTraits(.isHeader)
+            .accessibilityFocused($focusedField, equals: .dialogTitle)
         Text("Content")
-            .accessibilityFocused($focusedField, equals: .closeButton)
         Button("Close") {
             showDialog = false
-            focusedField = .dialogButton
+            focusedField = .dialogButton // Return to trigger
         }
-        .keyboardShortcut(.cancelAction) // ESC key
+        .keyboardShortcut(.cancelAction)
     }
     .accessibilityElement(children: .contain)
+    .accessibilityAddTraits(.isModal) // Mark as modal dialog
     .onKeyPress(.escape) {
         showDialog = false
         focusedField = .dialogButton
         return .handled
     }
 }
+// When opening: focusedField = .dialogTitle
 """,
             badExample: {
                 VStack(spacing: 20) {
@@ -109,9 +113,9 @@ if showDialog {
 
                     Button("Open Good Custom Dialog") {
                         showGoodDialog = true
-                        // Set focus to the dialog
+                        // Set focus to the dialog title (logical starting point)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            focusedField = .closeButton
+                            focusedField = .dialogTitle
                         }
                     }
                     .accessibilityFocused($focusedField, equals: .dialogButton)
@@ -175,8 +179,9 @@ if showDialog {
                 Text("Dialog With Focus")
                     .font(.headline)
                     .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($focusedField, equals: .dialogTitle)
 
-                Text("This dialog properly manages VoiceOver focus. When opened, focus moves here. When closed, it returns to the button. Press ESC to dismiss.")
+                Text("This dialog properly manages VoiceOver focus. When opened, focus moves to the title (this dialog's logical starting point). The modal trait helps contain focus. When closed, focus returns to the button. Press ESC to dismiss.")
                     .font(.body)
                     .multilineTextAlignment(.center)
 
@@ -185,7 +190,6 @@ if showDialog {
                     // Return focus to the trigger button
                     focusedField = .dialogButton
                 }
-                .accessibilityFocused($focusedField, equals: .closeButton)
                 .padding(.horizontal, 30)
                 .padding(.vertical, 10)
                 .background(Color.green)
@@ -199,6 +203,7 @@ if showDialog {
             .shadow(radius: 20)
             .padding(40)
             .accessibilityElement(children: .contain)
+            .accessibilityAddTraits(.isModal)
             .onKeyPress(.escape) {
                 showGoodDialog = false
                 focusedField = .dialogButton
