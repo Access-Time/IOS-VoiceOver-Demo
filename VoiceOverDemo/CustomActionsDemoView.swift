@@ -156,36 +156,6 @@ struct BadActionCard: View {
             Image(systemName: isLiked ? "heart.fill" : "heart")
                 .foregroundColor(isLiked ? .red : .gray)
                 .font(.title)
-        }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(8)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-        )
-    }
-}
-
-struct GoodActionCard: View {
-    let number: Int
-    let isLiked: Bool
-
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Photo Card \(number)")
-                    .font(.headline)
-                Text("Swipe right to like, or use VoiceOver actions")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-
-            Spacer()
-
-            Image(systemName: isLiked ? "heart.fill" : "heart")
-                .foregroundColor(isLiked ? .red : .gray)
-                .font(.title)
                 .accessibilityHidden(true)
         }
         .padding()
@@ -196,8 +166,6 @@ struct GoodActionCard: View {
                 .stroke(Color.gray.opacity(0.3), lineWidth: 1)
         )
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Photo Card \(number)")
-        .accessibilityValue(isLiked ? "Liked" : "Not liked")
     }
 }
 
@@ -258,6 +226,16 @@ struct BestActionCard: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(Color.gray.opacity(0.3), lineWidth: 1)
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Photo Card \(number)")
+        .accessibilityValue(isLiked ? "Liked" : "Not liked")
+        .accessibilityAction(named: isLiked ? "Unlike" : "Like") {
+            onToggleLike()
+        }
+        .accessibilityAction(named: "Share") {
+            // Share action
+            print("Share Photo Card \(number)")
+        }
         .contextMenu {
             Button(action: onToggleLike) {
                 Label(isLiked ? "Unlike" : "Like", systemImage: isLiked ? "heart.slash" : "heart.fill")
