@@ -11,49 +11,41 @@ struct LanguageDemoView: View {
     var body: some View {
         DemoPageTemplate(
             title: "Language & Localization",
-            description: "VoiceOver uses the language settings to pronounce text correctly. When mixing languages or using non-English text, you should specify the language so VoiceOver can pronounce it properly. You can also set your app's default language.",
-            badExampleTitle: "❌ Bad Example",
-            goodExampleTitle: "✅ Good Example",
+            description: "VoiceOver needs to know which language to use for correct pronunciation. When mixing languages or using non-English text, always use the accessibilityLanguage modifier to tell VoiceOver which voice to use.",
+            badExampleTitle: "❌ Bad Example - No Language Specified",
+            goodExampleTitle: "✅ Good Example - Language Specified",
             explanation: """
-To set the default language for your entire app, configure it in your App struct:
+VoiceOver attempts to auto-detect the language of text, but this can be unreliable, especially with mixed content, proper nouns, or short phrases. Always explicitly specify the language using Text(verbatim:) combined with .environment(\\.locale, ...) modifier.
 
-@main
-struct YourApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environment(\\.locale, Locale(identifier: "fr-FR"))
-        }
-    }
-}
-
-For individual text elements with different languages, use .environment(\\.locale) on specific views. This ensures VoiceOver pronounces the text with the correct accent and pronunciation rules.
+Use verbatim to prevent localization and set the locale environment with language codes like "en" (English), "fr" (French), "es" (Spanish), "de" (German), etc.
 """,
             codeSnippet: """
-// Set app-wide default language
-@main
-struct MyApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environment(\\.locale, Locale(identifier: "en-US"))
-        }
-    }
-}
-
 // Bad - no language specified for mixed content
 Text("Bonjour le monde")
+// VoiceOver may guess wrong or use device language ❌
 
-// Good - language specified using locale
-Text("Bonjour le monde")
-    .environment(\\.locale, Locale(identifier: "fr-FR"))
+// Good - language specified using verbatim and locale
+Text(verbatim: "Bonjour le monde")
+    .environment(\\.locale, .init(identifier: "fr"))
+// VoiceOver uses French pronunciation ✅
 
-// For entire view sections
+// For entire view sections with same language
 VStack {
-    Text("Hola")
-    Text("¿Cómo estás?")
+    Text(verbatim: "Hola")
+    Text(verbatim: "¿Cómo estás?")
 }
-.environment(\\.locale, Locale(identifier: "es-ES"))
+.environment(\\.locale, .init(identifier: "es"))
+// All child elements use Spanish pronunciation ✅
+
+// Mixed language content
+VStack {
+    Text(verbatim: "Welcome")
+        .environment(\\.locale, .init(identifier: "en"))
+    Text(verbatim: "Bienvenue")
+        .environment(\\.locale, .init(identifier: "fr"))
+    Text(verbatim: "Willkommen")
+        .environment(\\.locale, .init(identifier: "de"))
+}
 """,
             badExample: {
                 VStack(spacing: 20) {
@@ -93,7 +85,7 @@ VStack {
                             .cornerRadius(8)
                     }
 
-                    Text("⚠️ VoiceOver will use English pronunciation")
+                    Text("⚠️ VoiceOver may mispronounce or use wrong language")
                         .font(.caption)
                         .foregroundColor(.red)
                         .italic()
@@ -105,42 +97,42 @@ VStack {
                         Text("French (with language):")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        Text("Bonjour le monde")
+                        Text(verbatim: "Bonjour le monde")
                             .font(.title3)
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.white)
                             .cornerRadius(8)
-                            .environment(\.locale, Locale(identifier: "fr-FR"))
+                            .environment(\.locale, .init(identifier: "fr"))
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Spanish (with language):")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        Text("Hola, ¿cómo estás?")
+                        Text(verbatim: "Hola, ¿cómo estás?")
                             .font(.title3)
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.white)
                             .cornerRadius(8)
-                            .environment(\.locale, Locale(identifier: "es-ES"))
+                            .environment(\.locale, .init(identifier: "es"))
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("German (with language):")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        Text("Guten Tag, wie geht es Ihnen?")
+                        Text(verbatim: "Guten Tag, wie geht es Ihnen?")
                             .font(.title3)
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.white)
                             .cornerRadius(8)
-                            .environment(\.locale, Locale(identifier: "de-DE"))
+                            .environment(\.locale, .init(identifier: "de"))
                     }
 
-                    Text("✅ VoiceOver will pronounce correctly")
+                    Text("✅ VoiceOver will pronounce each language correctly")
                         .font(.caption)
                         .foregroundColor(.green)
                         .italic()
