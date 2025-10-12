@@ -104,6 +104,7 @@ struct BadSelectionCard: View {
             Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                 .foregroundColor(isSelected ? .green : .gray)
                 .font(.title2)
+                .accessibilityHidden(true)
 
             Text("Card \(number)")
                 .font(.body)
@@ -118,6 +119,7 @@ struct BadSelectionCard: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(isSelected ? Color.green : Color.gray.opacity(0.3), lineWidth: 2)
         )
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -145,5 +147,6 @@ struct GoodSelectionCard: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(isSelected ? Color.green : Color.gray.opacity(0.3), lineWidth: 2)
         )
+        .accessibilityElement(children: .combine)
     }
 }
